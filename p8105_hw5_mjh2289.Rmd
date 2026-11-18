@@ -50,7 +50,7 @@ birthday_simulation_df <-
 
 birthday_simulation_df |> 
   group_by(n_room) |> 
-  summarize(p_birthday_shared = mean(birthday_shared)) |> 
+  summarize(p_birthday_shared = mean(birthday_shared)) |>
   ggplot() + 
   geom_point(mapping = aes(x = n_room, y = p_birthday_shared)) +
   geom_hline(yintercept = c(0.25, 0.50, 0.75), linetype = "dashed", alpha = 0.5) + 
@@ -67,7 +67,7 @@ birthday_simulation_df |>
   scale_x_continuous(breaks = seq(0, 50, by = 5))
 ```
 
-This exhibit illustrates simulated results for the probability that at least two people in the same room share a birthday based on how many people are in a room. The probability was simulated across 10,000 rooms of 2 people, 3 people, ..., and 50 people. The  probability eclipsed 0.25, 0.50, and 0.75 at 15, 23, and 32 people in a room, respectively.
+This exhibit illustrates simulated results for the probability that at least two people in a room share a birthday based on how many people are in the room. The probability was simulated across 10,000 rooms of 2 people, 3 people, ..., and 50 people. The  probability eclipsed 0.25, 0.50, and 0.75 at 15, 23, and 33 people in a room, respectively.
 
 # Problem 2
 ##### The zip file contains data from a longitudinal study that included a control arm and an experimental arm. Data for each participant is included in a separate file, and file names include the subject ID and arm. Create a tidy dataframe containing data from all participants, including the subject ID, arm, and observations over time: (1) Start with a dataframe containing all file names; the list.files function will help, (2) iterate over file names and read in data for each subject using purrr::map and saving the result as a new variable in the dataframe, and (3) tidy the result; manipulate file names to include control arm and subject ID, make sure weekly observations are “tidy”, and do any other tidying that’s necessary
@@ -108,14 +108,14 @@ import_df %>%
   facet_wrap(~participant_group) + 
   theme_minimal() + 
   labs(
-    title = "Outcome Measurement Over Time, by Study Arm",
+    title = "Outcome Measurement Over Time by Study Arm",
     x = "Week",
     y = "Outcome Measurement"
     ) + 
   scale_x_continuous(breaks = seq(1, 8, by = 1))
 ```
 
-This exhibit illustrates the outcome measurement over time for each subject, by study arm. I observed that the control arm remains stable over time, whereas the experimental arm increases over time. Furthermore, there is variability in both arms as early as the first week, with participants beginning with higher values of the outcome tending to end with higher values of the outcome as well, and vice versa. 
+This exhibit illustrates the outcome measurement over time for each subject by study arm. I observe that the control arm remains stable over time, whereas the experimental arm increases over time, suggesting a positive effect of the intervention. Furthermore, there is variability within both arms of the study as early as the first week, indicating potential population heterogeneity in the outcome measurement at baseline or as a result of the intervention. 
 
 # Problem 3
 ##### When designing an experiment or analysis, a common question is whether it is likely that a true effect will be detected – put differently, whether a false null hypothesis will be rejected. The probability that a false null hypothesis is rejected is referred to as power, and it depends on several factors, including: the sample size; the effect size; and the error variance. In this problem, you will conduct a simulation to explore power in a one-sample t-test. First set the following design elements: n = 30, $\sigma$ = 5. 
@@ -141,7 +141,7 @@ normal_simulation_mu_0_df
 The function was written as requested. I then printed $\hat{\mu}$ and the p-value for the first ten datasets. 
 
 ##### Repeat the above for $\mu$ = {1,2,3,4,5,6}
-```{r, cache = TRUE}
+```{r}
 normal_simulation_mu_1_to_6_df <- 
   expand_grid(
     mu = 1:6, 
@@ -154,7 +154,7 @@ normal_simulation_mu_1_to_6_df |>
   filter(iteration == 1 | iteration == 5000)
 ```
 
-The function was expanded as requested. I then printed $\hat{\mu}$ and the p-value for the first and last dataset for each value of $\hat{\mu}$. 
+The function was repeated for $\mu$ = {1,2,3,4,5,6} as requested. I then printed $\hat{\mu}$ and the p-value for the first and last dataset for each value of $\mu$. 
 
 ##### Make a plot showing the proportion of times the null was rejected (the power of the test) on the y axis and the true value of 𝜇 on the x axis. Describe the association between effect size and power.
 ```{r}
@@ -181,7 +181,7 @@ normal_simulation_mu_1_to_6_df |>
     )
 ```
 
-This exhibit illustrates the statistical power of a one-sample t-test for $\mu$ = {1,2,3,4,5,6} under the null model. Each result represents the proportion of times the null model was rejected across 5000 simulated datasets of 30 observations drawn from the normal distribution with the specified population mean and sigma = 5. Statistical power increases as $\mu$ deviates farther from 0, approaching 1.00 when $\mu$ reaches 4. I conclude that statistical power is positively associated with effect size.
+This exhibit illustrates the statistical power of a one-sample t-test for $\mu$ = {1,2,3,4,5,6} under the null model. Each result represents the proportion of times the null model was rejected across 5000 simulated datasets of 30 observations drawn from the normal distribution with the specified population mean and $\sigma$ = 5. Statistical power increases as $\mu$ deviates farther from 0, approaching 1.00 after $\mu$ reaches 4. I conclude that statistical power is positively associated with effect size.
 
 ##### Make a plot showing the average estimate of 𝜇̂ on the y axis and the true value of 𝜇 on the x axis. Make a second plot (or overlay on the first) the average estimate of 𝜇̂ only in samples for which the null was rejected on the y axis and the true value of 𝜇 on the x axis. Is the sample average of 𝜇̂ across tests for which the null is rejected approximately equal to the true value of 𝜇? Why or why not?
 ```{r, message = FALSE}
@@ -223,4 +223,4 @@ bind_rows(normal_simulation_mu_1_to_6_df, normal_simulation_mu_1_to_6_df_r) |>
   scale_color_manual(values = c("black", "red"))
 ```
 
-This exhibit illustrates the average $\hat{\mu}$ versus $\mu$ under the null model for the average $\hat{\mu}$ calculated across (1) all samples, and (2) samples which rejected the null hypothesis. Whereas average $\hat{\mu}$ calculated across all samples is approximately equal to $\mu$ at every value of $\mu$ due to normal sampling, average $\hat{\mu}$ calculated across samples which rejected the null hypothesis is greater than $\mu$ at $\mu$ = {1, 2, 3} and approximately equal $\mu$ at $\mu$ = {4, 5, 6}. This finding relates to the previous exhibit in which statistical power is approximately equal to 1 for $\mu$ = {4, 5, 6} versus less than one at $\mu$ = {1, 2, 3}, and that when $\mu$ > 0, rejection is more common in samples in which $\hat{\mu}$ > $\mu$ given $\mu_0 = 0$ and $\mu > 0$. 
+This exhibit illustrates the average $\hat{\mu}$ versus $\mu$ under the null model when the average $\hat{\mu}$ is calculated across (1) all samples, and (2) samples which rejected the null hypothesis. Whereas the average $\hat{\mu}$ calculated across all samples is approximately equal to $\mu$ at every value of $\mu$ due to normal sampling, the average $\hat{\mu}$ calculated across samples which rejected the null hypothesis is greater than $\mu$ at $\mu$ = {1, 2, 3} and approximately equal to $\mu$ at $\mu$ = {4, 5, 6}. This finding relates to the previous exhibit in which statistical power is approximately equal to 1 for $\mu$ = {4, 5, 6} versus less than one at $\mu$ = {1, 2, 3}, and that when $\mu$ > 0, rejection is more common in samples in which $\hat{\mu}$ > $\mu$ given $\mu_0 = 0$ and $\mu > 0$. 
